@@ -87,13 +87,13 @@ bool insereArestaAux(Grafo* g, int v1, int v2) {
     ElemLista *novo, *ant = NULL; //ElemLista* tipo e ElemLista *tipo eh a msm coisa
     ElemLista* atual = g->A[v1];
 
-    if(atual){
-        while (atual || atual->vertice<v2) //atual->vertice == (*atual).vertice
-        {
-            ant = atual;
-            atual = atual->prox;
-        }
+    
+    while (atual && atual->vertice<v2) //atual->vertice == (*atual).vertice
+    {
+        ant = atual;
+        atual = atual->prox;
     }
+    
     if(atual && atual->vertice == v2) return false;
 
     novo = (ElemLista*)malloc(sizeof(ElemLista));
