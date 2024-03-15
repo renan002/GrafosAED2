@@ -78,6 +78,7 @@ bool liberaGrafo(Grafo* g) {
 
     g->numArestas = 0;
     g->numVertices = 0;
+    g->A = NULL;
 
     return true;
     
@@ -128,7 +129,7 @@ bool removeArestaAux(Grafo* g, int v1, int v2) {
         atual = atual->prox;
     }
 
-    if (atual && atual->vertice==2)
+    if (atual && atual->vertice==v2)
     {
         if (ant) ant->prox = atual->prox;
         else g->A[v1] = atual->prox;
@@ -137,7 +138,7 @@ bool removeArestaAux(Grafo* g, int v1, int v2) {
         
     }
     return false;
-    
+    //O(adj(v1))
 }
 
 bool removeAresta(Grafo* g, int v1, int v2) {
@@ -145,17 +146,67 @@ bool removeAresta(Grafo* g, int v1, int v2) {
 
     if(removeArestaAux(g, v1, v2)){
         removeArestaAux(g, v1, v2);
+        g->numArestas--;
+        return true;
     }
+    return false;
+    //O(1) + O(removeArestaAux)
 }
 
 bool arestaExiste(Grafo* g, int v1, int v2) {
     if(!g || v1<0 || v2< 0  ||v1 >= g->numVertices || v2 >= g->numVertices) return false;
+
+    ElemLista* atual = g->A[v1];
+    while (atual && atual->vertice < v2)
+        atual = atual->prox;
+    if (atual && atual->vertice == v2) return true;
+
+    return false;
+    //O(adj(v1))
 }
 
-int numeroDeArestas2(Grafo* g) {
-    if(!g) return -1;
+int numeroDeVertices(Grafo* g){
+    if (g!=NULL) return g->numVertices;
+    else return -1;
+    //O(1)
+}
+    
+int numeroDeArestas(Grafo* g){
+    if (g!=NULL) return g->numArestas;
+    else return -1;
+}
+
+int numeroDeArestas2(Grafo* g){
+    if (g==NULL) return -1;
 
     ElemLista *atual;
+    int x, arestas = 0;
+    for (x=0; x<g->numVertices; x++){
+        atual = g->A[x];
+    while (atual){
+        arestas++;
+        atual = atual->prox;
+    }
+    }
+    return arestas/2;
+}
+
+bool possuiVizinhos(Grafo* g, int v){
+    if (!g || v < 0 || v >= g->numVertices || !(g->A[v]))
+        return false;
+    return true;
+}
+
+int retornaGrauDoVertice(Grafo* g, int v){
+    if (!g || v < 0 || v >= g->numVertices) return -1;
+
+    int grau = 0;
+    ElemLista* atual = g->A[v];
+    while (atual){
+        grau++;
+        atual = atual->prox;
+    }
+    return grau;
 }
 
 int main(){
